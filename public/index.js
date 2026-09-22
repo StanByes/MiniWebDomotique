@@ -1,5 +1,7 @@
+// Web server route to get data constant
 const DATA_URL = "/data";
 
+// Chart colors for different type of logs
 const LOGS_BAR_CHART_BG_COLORS = [
   "rgba(135, 201, 255, 0.3)",
   "rgba(75, 141, 235, 0.3)",
@@ -21,26 +23,34 @@ const LOGS_BAR_CHART_BORDER_COLORS = [
   "rgb(0, 230, 0)"
 ];
 
+// Active filter variable
 let filter = "day";
 
+// We wait the page to be entirely loaded before doing anything on it
 document.addEventListener("DOMContentLoaded", () => {
+  // Create and connect the websocket client. By default, the function io() without parameters search for the current URL with the default websocket port.
   const socket = io();
 
+  // Listen to the "connect" event to know if the connection is established with the server
   socket.on("connect", () => {
     console.log("WS connection established");
   });
 
+  // Listen to the "data" event, a custom event defined in the server side, to reload data and refresh the page
   socket.on("data", (data) => {
     loadData();
   });
 
+  // Listen to the "disconnect" event, to know if the connection has been broken 
   socket.on("disconnect", () => {
     console.log("WS connection disconnected");
   });
 
+  // We store the charts instance to destroy them at the refresh (we can also use an update, the 2 methods are good)
   let logsChart = null;
   let logsLineChart = null;
 
+  // Setup all charts from an array of logs
   const setupLogsChart = (logs) => {
     if (logsChart != null) {
       logsChart.destroy();
@@ -81,8 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
       i++;
     }
 
-    console.log(datasets);
-
     const lineChartCtx = document.getElementById("logs-line-chart");
     if (logsLineChart) {
       logsLineChart.destroy();
@@ -97,7 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // We store line charts to destroy them at the refresh
   const lineCharts = [];
+
+  // Function creating a line chart for a specific log type
   const setupLogTypeLineChart = (canvaId, logType, data, color) => {
     const existingChart = lineCharts[canvaId];
     if (existingChart) {
@@ -123,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return dataset;
   };
 
+  // Fetch data from the web server
   const loadData = async () => {
     const request = await fetch(DATA_URL);
     const requestData = await request.json();

@@ -1,7 +1,9 @@
 moment.updateLocale("en", {week: {dow: 1}});
 
+// Util function to create an array range from 0 to a max excluded number
 const range = (max) => Array.from({length: max}, (_x, i) => i);
 
+// Function to create good labels of charts depend to the active filter
 const createLabels = (filter) => {
   const now = moment();
   switch (filter) {
@@ -29,6 +31,7 @@ const createLabels = (filter) => {
   }
 }
 
+// Function which accepts an array of logs and the active filter. The result will be the filtered array content.
 const filterLogs = (filter, logs) => {
   const now = moment();
 
@@ -97,5 +100,6 @@ const filterLogs = (filter, logs) => {
   }
 }
 
+// We add functions as window properties to make them accessible through all scripts
 window.createChartLabels = createLabels;
 window.filterLogs = filterLogs;
