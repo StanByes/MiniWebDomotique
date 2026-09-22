@@ -12,14 +12,9 @@ const DIR_PATH = import.meta.dirname;
 const PUBLIC_PATH = path.join(DIR_PATH, "public");
 const VIEWS_PATH = path.join(DIR_PATH, "views");
 
-const types = ["FIRE", "VENT", "DOOR", "WINDOW", "LIGHT"];
-let id = 1;
-
 const data = {
   logs: getLogs()
 };
-
-console.log(data);
 
 const app = express();
 const server = createServer(app);
